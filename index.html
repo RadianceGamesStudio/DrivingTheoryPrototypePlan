@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrivingTheory: Plan de Développement Interactif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: The application is designed as an interactive dashboard with tab-based navigation for 'Chronologie', 'Équipe', and 'Scénarios'. This structure was chosen to break down the complex project plan into digestible, user-centric views. The primary 'Chronologie' view features a Gantt-style chart for high-level planning and a detailed, filterable task list for granular details. This allows users (e.g., project managers, team members) to quickly switch between a macro overview and micro task assignments. The 'Équipe' view clarifies roles, and the 'Scénarios' view provides visual context for the work items, making the plan more tangible and easier to understand than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Project Timeline: Report Info -> 4-month schedule. Goal -> Show duration/phases. Viz -> Horizontal Bar Chart (Gantt-style). Interaction -> Click on a month to filter tasks below. Justification -> Provides an immediate, intuitive overview of the project's lifecycle. Library -> Chart.js (Canvas).
+        - Task Breakdown: Report Info -> Role assignments and weekly tasks. Goal -> Organize detailed tasks. Viz -> Interactive list of cards. Interaction -> Filterable by month and role. Justification -> Allows for detailed planning and tracking for each team member. Method -> HTML/CSS/JS.
+        - Team Roles: Report Info -> 3 team members. Goal -> Inform on responsibilities. Viz -> Profile cards. Interaction -> None. Justification -> Clearly defines who is responsible for what. Method -> HTML/CSS/JS.
+        - Scene Overview: Report Info -> 5 game scenarios. Goal -> Provide visual context for development tasks. Viz -> Grid of cards. Interaction -> None. Justification -> Connects abstract tasks to concrete game content. Method -> HTML/CSS.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 150px;
+            max-height: 200px;
+        }
+        .task-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-left-width: 4px;
+        }
+        .task-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .active-tab {
+            border-bottom-color: #f59e0b; /* amber-500 */
+            color: #1e293b; /* slate-800 */
+        }
+        .inactive-tab {
+            border-bottom-color: transparent;
+            color: #64748b; /* slate-500 */
+        }
+        .filter-btn.active {
+            background-color: #f59e0b; /* amber-500 */
+            color: white;
+        }
+        .filter-btn.inactive {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #475569; /* slate-600 */
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800">DrivingTheory: Le Prototype</h1>
+            <p class="mt-2 text-lg text-slate-500">Plan de développement interactif final</p>
+        </header>
+
+        <nav class="mb-8 border-b border-slate-200">
+            <ul class="flex justify-center -mb-px space-x-6 md:space-x-8">
+                <li><button id="nav-timeline" class="nav-btn text-lg font-medium py-3 border-b-2 active-tab">Chronologie</button></li>
+                <li><button id="nav-team" class="nav-btn text-lg font-medium py-3 border-b-2 inactive-tab">Équipe</button></li>
+                <li><button id="nav-scenarios" class="nav-btn text-lg font-medium py-3 border-b-2 inactive-tab">Scénarios</button></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Timeline View -->
+            <div id="view-timeline">
+                <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Chronologie du Projet</h2>
+                    <p class="text-slate-500 mb-6">Vue d'ensemble du plan de développement de septembre à décembre. Cliquez sur un mois pour filtrer les tâches hebdomadaires ci-dessous.</p>
+                    <div class="chart-container">
+                        <canvas id="ganttChart"></canvas>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4 md:mb-0">Détail des Tâches</h2>
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <span class="font-medium self-center text-slate-600">Filtrer par rôle :</span>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="all">Tous</button>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="senior">Programmeur Senior</button>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="junior">Programmeur Junior</button>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="artist">Artiste 2D/3D</button>
+                        </div>
+                    </div>
+
+                    <div id="task-list" class="space-y-8">
+                        <!-- Tasks will be injected here by JS -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Team View -->
+            <div id="view-team" class="hidden">
+                <section>
+                     <h2 class="text-2xl font-bold text-slate-800 mb-1">L'Équipe de Développement</h2>
+                    <p class="text-slate-500 mb-6">Présentation des rôles et des responsabilités principales pour le prototype.</p>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center border-t-4 border-amber-400">
+                            <div class="mx-auto bg-amber-100 text-amber-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Programmeur Senior</h3>
+                            <p class="text-slate-500 mt-2">Responsable de l'architecture du projet, des systèmes de jeu principaux, de la supervision technique et du déploiement.</p>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center border-t-4 border-sky-400">
+                            <div class="mx-auto bg-sky-100 text-sky-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Programmeur Junior/Medior</h3>
+                            <p class="text-slate-500 mt-2">En charge de l'implémentation des scènes, de l'animation en moteur, de l'interface utilisateur et du support au développement.</p>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center border-t-4 border-rose-400">
+                            <div class="mx-auto bg-rose-100 text-rose-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Artiste 2D/3D</h3>
+                            <p class="text-slate-500 mt-2">Crée tous les assets visuels statiques : modèles 3D, environnements, textures, et conçoit l'identité visuelle de l'interface.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Scenarios View -->
+            <div id="view-scenarios" class="hidden">
+                 <section>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Les 5 Scénarios du Prototype</h2>
+                    <p class="text-slate-500 mb-6">Aperçu des situations de conduite qui seront développées pour valider le concept du jeu. Chaque scénario inclut une animation d'approche avant la question.</p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <img src="https://via.placeholder.com/600x400/e2e8f0/475569?text=Sc%C3%A8ne+1" alt="Scène 1: Entrée d'agglomération" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800">1. Entrée d'Agglomération (Gelrode)</h3>
+                                <p class="text-sm text-slate-500 mt-1">Question sur la limitation de vitesse.</p>
+                                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium mt-2 px-2.5 py-0.5 rounded-full">Vertical Slice</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <img src="https://via.placeholder.com/600x400/e2e8f0/475569?text=Sc%C3%A8ne+2" alt="Scène 2: Sortie de zone résidentielle" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800">2. Sortie de Zone Résidentielle</h3>
+                                <p class="text-sm text-slate-500 mt-1">Question sur les règles de priorité.</p>
+                                <span class="inline-block bg-green-100 text-green-800 text-xs font-medium mt-2 px-2.5 py-0.5 rounded-full">Contenu Standard</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <img src="https://via.placeholder.com/600x400/e2e8f0/475569?text=Sc%C3%A8ne+3" alt="Scène 3: Marchandises dangereuses" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800">3. Marchandises Dangereuses</h3>
+                                <p class="text-sm text-slate-500 mt-1">Question d'identification de panneau.</p>
+                                <span class="inline-block bg-green-100 text-green-800 text-xs font-medium mt-2 px-2.5 py-0.5 rounded-full">Contenu Standard</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <img src="https://via.placeholder.com/600x400/e2e8f0/475569?text=Sc%C3%A8ne+4" alt="Scène 4: Intersection" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800">4. Carrefour sans Signalisation</h3>
+                                <p class="text-sm text-slate-500 mt-1">Animation de la "priorité de droite".</p>
+                                <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium mt-2 px-2.5 py-0.5 rounded-full">Contenu Complexe</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <img src="https://via.placeholder.com/600x400/e2e8f0/475569?text=Sc%C3%A8ne+5" alt="Scène 5: Véhicule prioritaire" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800">5. Véhicule Prioritaire (Ambulance)</h3>
+                                <p class="text-sm text-slate-500 mt-1">Animation d'une situation d'urgence.</p>
+                                <span class="inline-block bg-red-100 text-red-800 text-xs font-medium mt-2 px-2.5 py-0.5 rounded-full">Contenu Complexe</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const taskData = {
+                september: [
+                    { week: 1, title: 'Project Setup & Core Systems', tasks: {
+                        senior: 'Initialize Git, design GameManager & animation framework.',
+                        junior: 'Setup directory structure, create placeholder scenes.',
+                        artist: 'Research & test AI 3D model generation tools.'
+                    }},
+                    { week: 2, title: 'Asset Pipeline & In-Engine Animation (1/2)', tasks: {
+                        senior: 'Develop QuestionManager to load from JSON.',
+                        junior: 'Start in-engine animation for "Gelrode" drive-in.',
+                        artist: 'Create static 3D assets for "Gelrode" scene.'
+                    }},
+                    { week: 3, title: 'Asset Pipeline & In-Engine Animation (2/2)', tasks: {
+                        senior: 'Provide code review & support for animation work.',
+                        junior: 'Finalize "drive-in" animation using AnimationPlayer.',
+                        artist: 'Deliver final static models for "Gelrode".'
+                    }},
+                    { week: 4, title: 'Vertical Slice Completion & Review', tasks: {
+                        senior: 'Finalize question logic for "Gelrode".',
+                        junior: 'Integrate final assets and logic into the scene.',
+                        artist: 'Participate in review and provide visual feedback.'
+                    }}
+                ],
+                october: [
+                    { week: 5, title: 'Scenario Production (Part 1 - 1/2)', tasks: {
+                        senior: 'Implement question logic for "Woonerf" & "Dangerous Goods".',
+                        junior: 'Implement "Woonerf" scene and its drive-in animation.',
+                        artist: 'Create static 3D assets for "Woonerf" scene.'
+                    }},
+                    { week: 6, title: 'Scenario Production (Part 1 - 2/2)', tasks: {
+                        senior: 'Provide technical oversight on new scene implementations.',
+                        junior: 'Implement "Dangerous Goods" scene and its animation.',
+                        artist: 'Create static 3D assets for "Dangerous Goods" scene.'
+                    }},
+                    { week: 7, title: 'Complex, Scripted Animation (Part 2 - 1/2)', tasks: {
+                        senior: 'Lead animation for "Ambulance" scenario using Tween/AnimationPlayer.',
+                        junior: 'Implement "Intersection" scene and player car approach.',
+                        artist: 'Create static 3D models for ambulance and intersection cars.'
+                    }},
+                    { week: 8, title: 'Complex, Scripted Animation (Part 2 - 2/2)', tasks: {
+                        senior: 'Supervise and review "Intersection" animation.',
+                        junior: 'Create main animation sequence for "Intersection" cars.',
+                        artist: 'Deliver final models for complex scenes.'
+                    }}
+                ],
+                november: [
+                    { week: 9, title: 'UI/UX Implementation (1/2)', tasks: {
+                        senior: 'Oversee UI implementation, enforce signal usage.',
+                        junior: 'Implement MainMenu and Settings scenes.',
+                        artist: 'Design complete UI/UX visual identity (menus, HUD).'
+                    }},
+                    { week: 10, title: 'UI/UX Implementation (2/2)', tasks: {
+                        senior: 'Implement data persistence for user settings.',
+                        junior: 'Implement ScoreScreen and full menu flow.',
+                        artist: 'Deliver final UI assets (buttons, icons, backgrounds).'
+                    }},
+                    { week: 11, title: 'Player Progression System', tasks: {
+                        senior: 'Supervise implementation of progress saving/loading.',
+                        junior: 'Implement "Chapter Select" screen with scores.',
+                        artist: 'Provide any needed icons or graphics for progression UI.'
+                    }},
+                    { week: 12, title: 'Monetization Framework', tasks: {
+                        senior: 'Integrate Godot plugin for Google AdMob.',
+                        junior: 'Implement application-side logic for showing simulated ads.',
+                        artist: 'Design visual placement for sponsored billboards.'
+                    }}
+                ],
+                december: [
+                    { week: 13, title: 'Internal Testing & Bug Fixing', tasks: {
+                        senior: 'Prioritize and fix architectural/complex bugs.',
+                        junior: 'Fix UI and simpler gameplay bugs.',
+                        artist: 'Identify and log visual glitches.'
+                    }},
+                    { week: 14, title: 'Polish', tasks: {
+                        senior: 'Perform final code optimizations.',
+                        junior: 'Refine animation timings based on feedback.',
+                        artist: 'Polish all visual elements and implement sound effects.'
+                    }},
+                    { week: 15, title: 'Build Generation & Final Documentation', tasks: {
+                        senior: 'Manage build and export process for Web & Android.',
+                        junior: 'Assist with testing exported builds on target devices.',
+                        artist: 'Collaborate on the final project handoff document.'
+                    }},
+                    { week: 16, title: 'Project Retrospective & Future Planning', tasks: {
+                        senior: 'Participate in retrospective.',
+                        junior: 'Participate in retrospective.',
+                        artist: 'Participate in retrospective.'
+                    }}
+                ]
+            };
+
+            const taskListContainer = document.getElementById('task-list');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const views = {
+                timeline: document.getElementById('view-timeline'),
+                team: document.getElementById('view-team'),
+                scenarios: document.getElementById('view-scenarios')
+            };
+            const roleFilterButtons = document.querySelectorAll('.filter-btn');
+
+            let activeMonths = ['september', 'october', 'november', 'december'];
+            let activeRole = 'all';
+            let ganttChart;
+
+            function renderTasks() {
+                taskListContainer.innerHTML = '';
+                activeMonths.forEach(monthId => {
+                    const monthData = taskData[monthId];
+                    if (!monthData) return;
+
+                    monthData.forEach(weekData => {
+                        const card = document.createElement('div');
+                        card.className = 'task-card bg-white rounded-lg shadow-sm p-6 border-l-slate-300';
+                        
+                        let content = `<h3 class="text-lg font-bold text-slate-800 mb-4">Semaine ${weekData.week}: <span class="font-normal text-slate-600">${weekData.title}</span></h3><div class="grid md:grid-cols-3 gap-x-6 gap-y-4">`;
+
+                        const rolesToRender = (activeRole === 'all') ? ['senior', 'junior', 'artist'] : [activeRole];
+                        
+                        if (rolesToRender.includes('senior')) {
+                            content += `<div><h4 class="font-semibold text-amber-600 mb-1">Programmeur Senior</h4><p class="text-slate-600 text-sm">${weekData.tasks.senior}</p></div>`;
+                        }
+                        if (rolesToRender.includes('junior')) {
+                            content += `<div><h4 class="font-semibold text-sky-600 mb-1">Programmeur Junior</h4><p class="text-slate-600 text-sm">${weekData.tasks.junior}</p></div>`;
+                        }
+                        if (rolesToRender.includes('artist')) {
+                            content += `<div><h4 class="font-semibold text-rose-600 mb-1">Artiste 2D/3D</h4><p class="text-slate-600 text-sm">${weekData.tasks.artist}</p></div>`;
+                        }
+
+                        content += '</div>';
+                        card.innerHTML = content;
+                        taskListContainer.appendChild(card);
+                    });
+                });
+            }
+
+            function createGanttChart() {
+                const ctx = document.getElementById('ganttChart').getContext('2d');
+                ganttChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Phase'],
+                        datasets: [
+                            { label: 'Septembre', data: [1], backgroundColor: 'rgba(59, 130, 246, 0.7)', barPercentage: 0.5, categoryPercentage: 1.0 },
+                            { label: 'Octobre', data: [1], backgroundColor: 'rgba(16, 185, 129, 0.7)', barPercentage: 0.5, categoryPercentage: 1.0 },
+                            { label: 'Novembre', data: [1], backgroundColor: 'rgba(245, 158, 11, 0.7)', barPercentage: 0.5, categoryPercentage: 1.0 },
+                            { label: 'Décembre', data: [1], backgroundColor: 'rgba(239, 68, 68, 0.7)', barPercentage: 0.5, categoryPercentage: 1.0 }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true, display: false, max: 4 },
+                            y: { stacked: true, display: false }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'bottom' },
+                            tooltip: { enabled: false }
+                        },
+                        onClick: (e) => {
+                            const activePoints = ganttChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                            if (activePoints.length) {
+                                const monthIndex = activePoints[0].datasetIndex;
+                                const monthId = Object.keys(taskData)[monthIndex];
+                                
+                                if (activeMonths.length === 1 && activeMonths[0] === monthId) {
+                                    activeMonths = Object.keys(taskData);
+                                } else {
+                                    activeMonths = [monthId];
+                                }
+                                updateChartHighlight();
+                                renderTasks();
+                            }
+                        }
+                    }
+                });
+                updateChartHighlight();
+            }
+
+            function updateChartHighlight() {
+                const allMonths = Object.keys(taskData);
+                ganttChart.data.datasets.forEach((dataset, index) => {
+                    const monthId = allMonths[index];
+                    const originalColor = ganttChart.config.data.datasets[index].backgroundColor.replace(', 0.7)', ', 1)').replace(', 1)', ', 1)');
+                    const fadedColor = originalColor.replace(', 1)', ', 0.4)');
+
+                    if (activeMonths.includes(monthId)) {
+                        dataset.backgroundColor = originalColor;
+                    } else {
+                        dataset.backgroundColor = fadedColor;
+                    }
+                });
+                ganttChart.update();
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('active-tab');
+                        btn.classList.add('inactive-tab');
+                    });
+                    button.classList.add('active-tab');
+                    button.classList.remove('inactive-tab');
+
+                    const viewId = button.id.split('-')[1];
+                    Object.values(views).forEach(view => view.classList.add('hidden'));
+                    views[viewId].classList.remove('hidden');
+                });
+            });
+
+            roleFilterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    roleFilterButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.add('inactive');
+                    });
+                    button.classList.add('active');
+                    button.classList.remove('inactive');
+                    activeRole = button.dataset.roleFilter;
+                    renderTasks();
+                });
+            });
+            
+            document.querySelector('.filter-btn[data-role-filter="all"]').classList.add('active');
+            document.querySelector('.filter-btn[data-role-filter="all"]').classList.remove('inactive');
+
+            createGanttChart();
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
