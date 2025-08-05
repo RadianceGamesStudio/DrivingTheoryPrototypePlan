@@ -12,11 +12,11 @@
     <!-- Chosen Palette: Slate & Amber -->
     <!-- Application Structure Plan: The application is designed as an interactive dashboard with tab-based navigation for 'Chronologie', 'Équipe', and 'Scénarios'. This structure was chosen to break down the complex project plan into digestible, user-centric views. The primary 'Chronologie' view features a Gantt-style chart for high-level planning and a detailed, filterable task list for granular details. This allows users (e.g., project managers, team members) to quickly switch between a macro overview and micro task assignments. The 'Équipe' view clarifies roles, and the 'Scénarios' view provides visual context for the work items, making the plan more tangible and easier to understand than a linear document. -->
     <!-- Visualization & Content Choices: 
-        - Project Timeline: Report Info -> 4-month schedule. Goal -> Show duration/phases. Viz -> Horizontal Bar Chart (Gantt-style). Interaction -> Click on a month to filter tasks below. Justification -> Provides an immediate, intuitive overview of the project's lifecycle. Library -> Chart.js (Canvas).
-        - Task Breakdown: Report Info -> Role assignments and weekly tasks. Goal -> Organize detailed tasks. Viz -> Interactive list of cards. Interaction -> Filterable by month and role. Justification -> Allows for detailed planning and tracking for each team member. Method -> HTML/CSS/JS.
-        - Team Roles: Report Info -> 3 team members. Goal -> Inform on responsibilities. Viz -> Profile cards. Interaction -> None. Justification -> Clearly defines who is responsible for what. Method -> HTML/CSS/JS.
-        - Scene Overview: Report Info -> 5 game scenarios. Goal -> Provide visual context for development tasks. Viz -> Grid of cards. Interaction -> None. Justification -> Connects abstract tasks to concrete game content. Method -> HTML/CSS.
-        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+         - Project Timeline: Report Info -> 4-month schedule. Goal -> Show duration/phases. Viz -> Horizontal Bar Chart (Gantt-style). Interaction -> Click on a month to filter tasks below. Justification -> Provides an immediate, intuitive overview of the project's lifecycle. Library -> Chart.js (Canvas).
+         - Task Breakdown: Report Info -> Role assignments and weekly tasks. Goal -> Organize detailed tasks. Viz -> Interactive list of cards. Interaction -> Filterable by month and role. Justification -> Allows for detailed planning and tracking for each team member. Method -> HTML/CSS/JS.
+         - Team Roles: Report Info -> 3 team members. Goal -> Inform on responsibilities. Viz -> Profile cards. Interaction -> None. Justification -> Clearly defines who is responsible for what. Method -> HTML/CSS/JS.
+         - Scene Overview: Report Info -> 5 game scenarios. Goal -> Provide visual context for development tasks. Viz -> Grid of cards. Interaction -> None. Justification -> Connects abstract tasks to concrete game content. Method -> HTML/CSS.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -91,13 +91,13 @@
                         <div class="flex flex-wrap gap-3 items-center">
                             <span class="font-medium self-center text-slate-600">Filtrer par rôle :</span>
                             <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="all">Tous</button>
-                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="senior">Programmeur Senior</button>
-                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="junior">Programmeur Junior</button>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="g">Programmeur G</button>
+                            <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="s">Programmeur S</button>
                             <button class="filter-btn inactive px-4 py-2 rounded-full text-sm font-medium transition" data-role-filter="artist">Artiste 2D/3D</button>
                         </div>
                     </div>
 
-                    <div id="task-list" class="space-y-8">
+                    <div id="task-list" class="space-y-4">
                         <!-- Tasks will be injected here by JS -->
                     </div>
                 </section>
@@ -113,14 +113,14 @@
                             <div class="mx-auto bg-amber-100 text-amber-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800">Programmeur Senior</h3>
+                            <h3 class="text-xl font-bold text-slate-800">Programmeur G</h3>
                             <p class="text-slate-500 mt-2">Responsable de l'architecture du projet, des systèmes de jeu principaux, de la supervision technique et du déploiement.</p>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm p-6 text-center border-t-4 border-sky-400">
                             <div class="mx-auto bg-sky-100 text-sky-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800">Programmeur Junior/Medior</h3>
+                            <h3 class="text-xl font-bold text-slate-800">Programmeur S</h3>
                             <p class="text-slate-500 mt-2">En charge de l'implémentation des scènes, de l'animation en moteur, de l'interface utilisateur et du support au développement.</p>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm p-6 text-center border-t-4 border-rose-400">
@@ -141,7 +141,7 @@
                     <p class="text-slate-500 mb-6">Aperçu des situations de conduite qui seront développées pour valider le concept du jeu. Chaque scénario inclut une animation d'approche avant la question.</p>
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <img src="Gelrode.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 1: Entrée d'agglomération" class="w-full h-48 object-cover">
+                            <img src="https://storage.googleapis.com/gemini-prod-us-west1-409903433299/images/5d548f48-369b-449e-a038-f9498a4495c5.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 1: Entrée d'agglomération" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800">1. Entrée d'Agglomération (Gelrode)</h3>
                                 <p class="text-sm text-slate-500 mt-1">Question sur la limitation de vitesse.</p>
@@ -149,7 +149,7 @@
                             </div>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <img src="ZoneResidentielle.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 2: Sortie de zone résidentielle" class="w-full h-48 object-cover">
+                            <img src="https://storage.googleapis.com/gemini-prod-us-west1-409903433299/images/223b5d1e-c75c-418f-9a1c-32389d34208a.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 2: Sortie de zone résidentielle" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800">2. Sortie de Zone Résidentielle</h3>
                                 <p class="text-sm text-slate-500 mt-1">Question sur les règles de priorité.</p>
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <img src="MarchendisesDangereuses.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 3: Marchandises dangereuses" class="w-full h-48 object-cover">
+                            <img src="https://storage.googleapis.com/gemini-prod-us-west1-409903433299/images/452140a7-3306-40e9-b695-882823617351.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 3: Marchandises dangereuses" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800">3. Marchandises Dangereuses</h3>
                                 <p class="text-sm text-slate-500 mt-1">Question d'identification de panneau.</p>
@@ -165,7 +165,7 @@
                             </div>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <img src="Carrefour.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 4: Intersection" class="w-full h-48 object-cover">
+                            <img src="https://storage.googleapis.com/gemini-prod-us-west1-409903433299/images/157d1a58-85e6-4279-847e-8597f8c5b62b.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 4: Intersection" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800">4. Carrefour sans Signalisation</h3>
                                 <p class="text-sm text-slate-500 mt-1">Animation de la "priorité de droite".</p>
@@ -173,7 +173,7 @@
                             </div>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <img src="Ambulance.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 5: Véhicule prioritaire" class="w-full h-48 object-cover">
+                            <img src="https://storage.googleapis.com/gemini-prod-us-west1-409903433299/images/73562635-42a4-4416-b8a7-79b90c128527.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+introuvable';" alt="Scène 5: Véhicule prioritaire" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800">5. Véhicule Prioritaire (Ambulance)</h3>
                                 <p class="text-sm text-slate-500 mt-1">Animation d'une situation d'urgence.</p>
@@ -191,89 +191,89 @@
             const taskData = {
                 september: [
                     { week: 1, title: 'Project Setup & Core Systems', tasks: {
-                        senior: 'Initialize Git, design GameManager & animation framework.',
-                        junior: 'Setup directory structure, create placeholder scenes.',
+                        g: 'Initialize Git, design GameManager & animation framework.',
+                        s: 'Setup directory structure, create placeholder scenes.',
                         artist: 'Research & test AI 3D model generation tools.'
                     }},
                     { week: 2, title: 'Asset Pipeline & In-Engine Animation (1/2)', tasks: {
-                        senior: 'Develop QuestionManager to load from JSON.',
-                        junior: 'Start in-engine animation for "Gelrode" drive-in.',
+                        g: 'Develop the QuestionManager to load and process `Question` resource files (`.tres`).',
+                        s: 'Start in-engine animation for "Gelrode" drive-in.',
                         artist: 'Create static 3D assets for "Gelrode" scene.'
                     }},
                     { week: 3, title: 'Asset Pipeline & In-Engine Animation (2/2)', tasks: {
-                        senior: 'Provide code review & support for animation work.',
-                        junior: 'Finalize "drive-in" animation using AnimationPlayer.',
+                        g: 'Provide direct support and code review for the Programmeur S\'s animation work, establishing best practices for using AnimationPlayer.',
+                        s: 'Finalize "drive-in" animation using AnimationPlayer.',
                         artist: 'Deliver final static models for "Gelrode".'
                     }},
                     { week: 4, title: 'Vertical Slice Completion & Review', tasks: {
-                        senior: 'Finalize question logic for "Gelrode".',
-                        junior: 'Integrate final assets and logic into the scene.',
+                        g: 'Finalize the logic for the "Gelrode" question, ensuring it is triggered correctly by the `animation_finished` signal from the AnimationPlayer node.',
+                        s: 'Integrate final assets and logic into the scene.',
                         artist: 'Participate in review and provide visual feedback.'
                     }}
                 ],
                 october: [
                     { week: 5, title: 'Scenario Production (Part 1 - 1/2)', tasks: {
-                        senior: 'Implement question logic for "Woonerf" & "Dangerous Goods".',
-                        junior: 'Implement "Woonerf" scene and its drive-in animation.',
-                        artist: 'Create static 3D assets for "Woonerf" scene.'
+                        g: 'Implement the question logic for both scenarios and continue to provide technical oversight on the animation implementation.',
+                        s: 'Implement the `Woonerf.tscn` and `DangerousGoods.tscn` scenes. For each, create the "drive-in" animation using the established AnimationPlayer workflow.',
+                        artist: 'Create the static 3D assets for the "Woonerf" and "Dangerous Goods" scenes.'
                     }},
                     { week: 6, title: 'Scenario Production (Part 1 - 2/2)', tasks: {
-                        senior: 'Provide technical oversight on new scene implementations.',
-                        junior: 'Implement "Dangerous Goods" scene and its animation.',
+                        g: 'Provide technical oversight on new scene implementations.',
+                        s: 'Implement "Dangerous Goods" scene and its animation.',
                         artist: 'Create static 3D assets for "Dangerous Goods" scene.'
                     }},
                     { week: 7, title: 'Complex, Scripted Animation (Part 2 - 1/2)', tasks: {
-                        senior: 'Lead animation for "Ambulance" scenario using Tween/AnimationPlayer.',
-                        junior: 'Implement "Intersection" scene and player car approach.',
-                        artist: 'Create static 3D models for ambulance and intersection cars.'
+                        g: 'Take the lead on the "Ambulance" scenario\'s animation. The task is to create a high-quality, pre-scripted sequence using AnimationPlayer and/or Tween nodes.',
+                        s: 'Implement the "Intersection" scene. Animate the player car\'s approach.',
+                        artist: 'Create the static 3D models for the ambulance and the three cars (A, B, C) for the intersection scene.'
                     }},
                     { week: 8, title: 'Complex, Scripted Animation (Part 2 - 2/2)', tasks: {
-                        senior: 'Supervise and review "Intersection" animation.',
-                        junior: 'Create main animation sequence for "Intersection" cars.',
+                        g: 'Supervise the Programmeur S\'s work on the "Intersection" animation, ensuring the sequence is accurate and well-timed.',
+                        s: 'Create the main animation sequence showing cars A, B, and C moving in the correct order using AnimationPlayer, potentially with multiple animation tracks for precise timing.',
                         artist: 'Deliver final models for complex scenes.'
                     }}
                 ],
                 november: [
                     { week: 9, title: 'UI/UX Implementation (1/2)', tasks: {
-                        senior: 'Oversee UI implementation, enforce signal usage.',
-                        junior: 'Implement MainMenu and Settings scenes.',
-                        artist: 'Design complete UI/UX visual identity (menus, HUD).'
+                        g: 'Oversee UI implementation, enforce the use of signals for decoupling, and implement data persistence for user settings.',
+                        s: 'Implement the full menu flow (MainMenu, Settings, ScoreScreen) based on the artist\'s designs.',
+                        artist: 'Design the complete UI/UX visual identity (menus, buttons, HUD).'
                     }},
                     { week: 10, title: 'UI/UX Implementation (2/2)', tasks: {
-                        senior: 'Implement data persistence for user settings.',
-                        junior: 'Implement ScoreScreen and full menu flow.',
+                        g: 'Implement data persistence for user settings.',
+                        s: 'Implement ScoreScreen and full menu flow.',
                         artist: 'Deliver final UI assets (buttons, icons, backgrounds).'
                     }},
                     { week: 11, title: 'Player Progression System', tasks: {
-                        senior: 'Supervise implementation of progress saving/loading.',
-                        junior: 'Implement "Chapter Select" screen with scores.',
+                        g: 'Supervise the implementation, ensuring the progress data is saved and loaded correctly along with other user settings.',
+                        s: 'Implement a simple progress tracking or "Chapter Select" screen that shows the user\'s completion status and best score for each scenario.',
                         artist: 'Provide any needed icons or graphics for progression UI.'
                     }},
                     { week: 12, title: 'Monetization Framework', tasks: {
-                        senior: 'Integrate Godot plugin for Google AdMob.',
-                        junior: 'Implement application-side logic for showing simulated ads.',
-                        artist: 'Design visual placement for sponsored billboards.'
+                        g: 'Integrate the Godot plugin for Google AdMob with placeholder IDs.',
+                        s: 'Implement the application-side logic to simulate showing an ad at appropriate times.',
+                        artist: 'Design the visual placement for sponsored billboards in the game world.'
                     }}
                 ],
                 december: [
                     { week: 13, title: 'Internal Testing & Bug Fixing', tasks: {
-                        senior: 'Prioritize and fix architectural/complex bugs.',
-                        junior: 'Fix UI and simpler gameplay bugs.',
+                        g: 'Prioritize and fix architectural/complex bugs.',
+                        s: 'Fix UI and simpler gameplay bugs.',
                         artist: 'Identify and log visual glitches.'
                     }},
                     { week: 14, title: 'Polish', tasks: {
-                        senior: 'Perform final code optimizations.',
-                        junior: 'Refine animation timings based on feedback.',
+                        g: 'Perform final code optimizations.',
+                        s: 'Refine animation timings based on feedback.',
                         artist: 'Polish all visual elements and implement sound effects.'
                     }},
                     { week: 15, title: 'Build Generation & Final Documentation', tasks: {
-                        senior: 'Manage build and export process for Web & Android.',
-                        junior: 'Assist with testing exported builds on target devices.',
-                        artist: 'Collaborate on the final project handoff document.'
+                        g: 'Manage the build and export process for Web (HTML5) and Android (APK).',
+                        s: 'Assist with testing the exported builds.',
+                        artist: 'Collaborate on a concise final project handoff document.'
                     }},
                     { week: 16, title: 'Project Retrospective & Future Planning', tasks: {
-                        senior: 'Participate in retrospective.',
-                        junior: 'Participate in retrospective.',
+                        g: 'Participate in retrospective.',
+                        s: 'Participate in retrospective.',
                         artist: 'Participate in retrospective.'
                     }}
                 ]
@@ -293,10 +293,29 @@
             let ganttChart;
 
             function renderTasks() {
+                const sectionTitles = {
+                    september: "Section I: Foundation and the Programmer-Animated Vertical Slice",
+                    october: "Section II: Replicating the Animated Experience",
+                    november: "Section III: User Experience and Commercial Frameworks",
+                    december: "Section IV: Polish, Testing, and Deployment"
+                };
+
                 taskListContainer.innerHTML = '';
                 activeMonths.forEach(monthId => {
                     const monthData = taskData[monthId];
                     if (!monthData) return;
+
+                    const monthSection = document.createElement('div');
+                    monthSection.className = 'mb-12';
+
+                    const titleEl = document.createElement('h2');
+                    titleEl.className = 'text-2xl font-bold text-slate-700 mb-6 border-b border-slate-200 pb-3';
+                    const monthName = monthId.charAt(0).toUpperCase() + monthId.slice(1);
+                    titleEl.innerHTML = `${sectionTitles[monthId]} <span class="text-slate-400 font-medium text-xl">(${monthName})</span>`;
+                    monthSection.appendChild(titleEl);
+                    
+                    const tasksGrid = document.createElement('div');
+                    tasksGrid.className = 'space-y-8';
 
                     monthData.forEach(weekData => {
                         const card = document.createElement('div');
@@ -304,13 +323,13 @@
                         
                         let content = `<h3 class="text-lg font-bold text-slate-800 mb-4">Semaine ${weekData.week}: <span class="font-normal text-slate-600">${weekData.title}</span></h3><div class="grid md:grid-cols-3 gap-x-6 gap-y-4">`;
 
-                        const rolesToRender = (activeRole === 'all') ? ['senior', 'junior', 'artist'] : [activeRole];
+                        const rolesToRender = (activeRole === 'all') ? ['g', 's', 'artist'] : [activeRole];
                         
-                        if (rolesToRender.includes('senior')) {
-                            content += `<div><h4 class="font-semibold text-amber-600 mb-1">Programmeur Senior</h4><p class="text-slate-600 text-sm">${weekData.tasks.senior}</p></div>`;
+                        if (rolesToRender.includes('g')) {
+                            content += `<div><h4 class="font-semibold text-amber-600 mb-1">Programmeur G</h4><p class="text-slate-600 text-sm">${weekData.tasks.g}</p></div>`;
                         }
-                        if (rolesToRender.includes('junior')) {
-                            content += `<div><h4 class="font-semibold text-sky-600 mb-1">Programmeur Junior</h4><p class="text-slate-600 text-sm">${weekData.tasks.junior}</p></div>`;
+                        if (rolesToRender.includes('s')) {
+                            content += `<div><h4 class="font-semibold text-sky-600 mb-1">Programmeur S</h4><p class="text-slate-600 text-sm">${weekData.tasks.s}</p></div>`;
                         }
                         if (rolesToRender.includes('artist')) {
                             content += `<div><h4 class="font-semibold text-rose-600 mb-1">Artiste 2D/3D</h4><p class="text-slate-600 text-sm">${weekData.tasks.artist}</p></div>`;
@@ -318,8 +337,11 @@
 
                         content += '</div>';
                         card.innerHTML = content;
-                        taskListContainer.appendChild(card);
+                        tasksGrid.appendChild(card);
                     });
+                    
+                    monthSection.appendChild(tasksGrid);
+                    taskListContainer.appendChild(monthSection);
                 });
             }
 
@@ -372,13 +394,19 @@
                 const allMonths = Object.keys(taskData);
                 ganttChart.data.datasets.forEach((dataset, index) => {
                     const monthId = allMonths[index];
-                    const originalColor = ganttChart.config.data.datasets[index].backgroundColor.replace(', 0.7)', ', 1)').replace(', 1)', ', 1)');
-                    const fadedColor = originalColor.replace(', 1)', ', 0.4)');
+                    const originalColor = ganttChart.config.data.datasets[index].backgroundColor;
+                    const baseColor = originalColor.match(/rgba\((\d+,\s*\d+,\s*\d+),/)[1];
+                    
+                    const fullOpacityColor = `rgba(${baseColor}, 1)`;
+                    const fadedColor = `rgba(${baseColor}, 0.3)`;
 
-                    if (activeMonths.includes(monthId)) {
-                        dataset.backgroundColor = originalColor;
+                    if (activeMonths.includes(monthId) || activeMonths.length === allMonths.length) {
+                         dataset.backgroundColor = `rgba(${baseColor}, 0.7)`;
+                         dataset.borderColor = `rgba(${baseColor}, 1)`;
+                         dataset.borderWidth = activeMonths.includes(monthId) ? 2 : 0;
                     } else {
-                        dataset.backgroundColor = fadedColor;
+                         dataset.backgroundColor = fadedColor;
+                         dataset.borderWidth = 0;
                     }
                 });
                 ganttChart.update();
